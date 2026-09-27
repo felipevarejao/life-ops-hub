@@ -15,6 +15,14 @@ resource "helm_release" "argocd" {
   wait       = true
   timeout    = 900 # Aguarda até 15 minutos para a instalação do ArgoCD ser concluída
   namespace  = kubernetes_namespace_v1.argocd.metadata[0].name
+
+  # Habilita o modo insecure para o ArgoCD, permitindo o acesso sem HTTPS (não recomendado para produção)
+  set = [
+    {
+      name  = "server.extraArgs[0]"
+      value = "--insecure"
+    }
+  ]
 }
 
 # Cria o recurso Ingress do ArgoCD com yaml file
