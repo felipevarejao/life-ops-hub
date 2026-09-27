@@ -11,7 +11,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.protocol: "h2c"
 spec:
   rules:
-    - host: http://k3s-control-plane-1.tail783ccb.ts.net/ # Meu DNS do Tailscale
+    - host: k3s-control-plane-1.tail783ccb.ts.net # Meu DNS do Tailscale
       http:
         paths:
           - path: /
