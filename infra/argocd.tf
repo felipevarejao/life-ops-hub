@@ -23,6 +23,15 @@ resource "helm_release" "argocd" {
       value = "--insecure"
     }
   ]
+
+  # Define os valores do ArgoCD a partir do arquivo values-argocd.yaml
+  values = [
+    templatefile("${path.module}/k8s/values-argocd.yaml", {
+      github_client_id     = var.github_client_id
+      github_client_secret = var.github_client_secret
+      github_admin_user    = var.github_admin_user
+    })
+  ]
 }
 
 # Cria o recurso Ingress do ArgoCD com yaml file
