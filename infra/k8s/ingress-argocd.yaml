@@ -5,13 +5,12 @@ metadata:
   namespace: argocd
   annotations:
     kubernetes.io/ingress.class: traefik
-    # Diz ao Traefik para usar HTTPS para falar com o pod interno do ArgoCD
-    traefik.ingress.kubernetes.io/service.serversscheme: "https"
     # Evita quedas de conexão na interface web do ArgoCD
-    traefik.ingress.kubernetes.io/router.protocols: "h2c"
+    traefik.ingress.kubernetes.io/router.protocols: h2c
 spec:
+  ingressClassName: traefik
   rules:
-    - host: k3s-control-plane-1.tail783ccb.ts.net # Meu DNS do Tailscale
+    - host: k3s-control-plane-1.tail783ccb.ts.net
       http:
         paths:
           - path: /
@@ -20,4 +19,4 @@ spec:
               service:
                 name: argocd-server
                 port:
-                  number: 443
+                  number: 80
