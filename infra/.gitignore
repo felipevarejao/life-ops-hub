@@ -1,0 +1,11 @@
+# Terraform - arquivos locais, nunca versionar
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+
+# Segredos sensíveis, nunca versionar
+*.pem
+*.key
+
