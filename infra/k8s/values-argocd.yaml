@@ -1,0 +1,15 @@
+configs:
+  cm:
+    url: http://k3s-control-plane-1.tail783ccb.ts.net
+    admin.enabled: false
+    dex.config: |
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: ${github_client_id}
+            clientSecret: ${github_client_secret}
+  rbac:
+    policy.csv: |
+      g, ${github_admin_user}, role:admin  
