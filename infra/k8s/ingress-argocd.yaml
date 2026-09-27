@@ -5,8 +5,6 @@ metadata:
   namespace: argocd
   annotations:
     kubernetes.io/ingress.class: traefik
-    # Evita quedas de conexão na interface web do ArgoCD
-    traefik.ingress.kubernetes.io/router.protocols: h2c
 spec:
   ingressClassName: traefik
   rules:
