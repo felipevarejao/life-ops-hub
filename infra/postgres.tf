@@ -13,6 +13,6 @@ resource "helm_release" "cloudnative-pg" {
 # Criar o Kind: Cluster e o primeiro banco de dados PostgreSQL usando o operador
 resource "kubectl_manifest" "postgresql_cluster" {
   depends_on = [helm_release.cloudnative-pg]
-  yaml_body = file("${path.module}/k8s/kind-cluster-postgres.yaml")
+  yaml_body = file("${path.module}/k8s/postgres/kind-cluster-postgres.yaml")
 }
 
