@@ -12,7 +12,3 @@ spec:
     initdb:
       database: jobhunt_db
       owner: jobhunt_user
-  manage:
-    roles:
-      name: authentik_user
-      ensure: present

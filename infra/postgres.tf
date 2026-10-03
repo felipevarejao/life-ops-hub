@@ -15,9 +15,3 @@ resource "kubectl_manifest" "postgresql_cluster" {
   depends_on = [helm_release.cloudnative-pg]
   yaml_body = file("${path.module}/k8s/postgres/kind-cluster-postgres.yaml")
 }
-
-# Cria database do authentik
-resource "kubectl_manifest" "authentik_database" {
-  depends_on = [kubectl_manifest.postgresql_cluster]
-  yaml_body = file("${path.module}/k8s/postgres/database-authentik.yaml")
-}
