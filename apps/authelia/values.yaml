@@ -3,9 +3,9 @@
 configMap:
   theme: dark
 
-  # Diz ao servidor do Authelia que ele responde sob a rota /auth
   server:
     path: "auth"
+
   session:
     cookies:
       - domain: k3s-control-plane-1.tail783ccb.ts.net
@@ -15,7 +15,6 @@ configMap:
     local:
       path: /config/db.sqlite
 
-  # Configuração do backend de autenticação
   notifier:
     filesystem:
       filename: /config/notification.txt
