@@ -13,15 +13,24 @@ configMap:
 
   storage:
     local:
+      enabled: true
       path: /config/db.sqlite
 
   notifier:
     filesystem:
+      enabled: true
       filename: /config/notification.txt
 
   authentication_backend:
     file:
+      enabled: true
       path: /secrets/users_database.yml
+
+  access_control:
+    default_policy: deny
+    rules:
+      - domain: "*.k3s-control-plane-1.tail783ccb.ts.net"
+        policy: one_factor
 
 secret:
   existingSecret: "authelia-secrets"

@@ -135,6 +135,39 @@ data:
       password_change:
         disable: false
       refresh_interval: '5 minutes'
+      file:
+        path: '/secrets/users_database.yml'
+        watch: false
+        search:
+          email: false
+          case_insensitive: false
+        password:
+          algorithm: 'argon2'
+          argon2:
+            variant: 'argon2id'
+            iterations: 3
+            memory: 65536
+            parallelism: 4
+            key_length: 32
+            salt_length: 16
+          scrypt:
+            variant: 'scrypt'
+            iterations: 16
+            block_size: 8
+            parallelism: 1
+            key_length: 32
+            salt_length: 16
+          pbkdf2:
+            variant: 'sha512'
+            iterations: 310000
+            salt_length: 16
+          sha2crypt:
+            variant: 'sha512'
+            iterations: 50000
+            salt_length: 16
+          bcrypt:
+            variant: 'standard'
+            cost: 12
     password_policy:
       standard:
         enabled: false
@@ -164,10 +197,18 @@ data:
       find_time: '2 minutes'
       ban_time: '5 minutes'
     storage:
+      local:
+        path: '/config/db.sqlite'
     notifier:
       disable_startup_check: false
+      filesystem:
+        filename: '/config/notification.txt'
     access_control:
-      default_policy: 'two_factor'
+      default_policy: 'deny'
+      rules:
+        - policy: one_factor
+          domain:
+            - '*.k3s-control-plane-1.tail783ccb.ts.net'
     ...
 
 ---
@@ -229,7 +270,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         helm.sh/chart: authelia-0.11.22
       annotations:
-        authelia.com/checksum-config: b1eebc6ad8e3170ced35c95cd120cb1d1d1e6c43f43f5f400cdb79a97fd09679
+        authelia.com/checksum-config: 39eba1093dd346bea496f70add3d4f06e6b7989c758a2e9c6a38ece3cb39e816
         
     spec:
       hostNetwork: false
