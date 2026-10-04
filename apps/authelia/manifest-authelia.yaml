@@ -338,9 +338,6 @@ spec:
           containerPort: 9091
           protocol: TCP
         volumeMounts:
-        - name: authelia
-          mountPath: /config
-          readOnly: false
         - name: config
           mountPath: /configuration.yaml
           subPath: configuration.yaml
@@ -348,10 +345,11 @@ spec:
         - name: secrets
           mountPath: /secrets/internal
           readOnly: true
+        - mountPath: /secrets/users_database.yml
+          name: user-db-volume
+          readOnly: true
+          subPath: users_database.yml
       volumes:
-      - name: authelia
-        emptyDir:
-          sizeLimit: 100Mi
       - name: config
         configMap:
           name: authelia
@@ -368,3 +366,9 @@ spec:
             path: session.encryption.key
           - key: storage.encryption.key
             path: storage.encryption.key
+      - name: user-db-volume
+        secret:
+          items:
+          - key: users_database.yml
+            path: users_database.yml
+          secretName: authelia-user-password-db

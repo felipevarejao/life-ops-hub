@@ -34,3 +34,18 @@ configMap:
 
 secret:
   existingSecret: "authelia-secrets"
+
+# Montagem de Secrets adicionais aceita pelo Schema do Authelia Chart
+pod:
+  extraVolumes:
+    - name: user-db-volume
+      secret:
+        secretName: authelia-user-password-db
+        items:
+          - key: users_database.yml
+            path: users_database.yml
+  extraVolumeMounts:
+    - name: user-db-volume
+      mountPath: /secrets/users_database.yml
+      subPath: users_database.yml
+      readOnly: true
