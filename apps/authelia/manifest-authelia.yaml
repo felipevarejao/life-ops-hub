@@ -197,8 +197,13 @@ data:
       find_time: '2 minutes'
       ban_time: '5 minutes'
     storage:
-      local:
-        path: '/config/db.sqlite'
+      postgres:
+        address: 'tcp://postgres-cluster-rw.database.svc.cluster.local:5432'
+        servers: []
+        timeout: '5 seconds'
+        database: 'authelia'
+        schema: 'public'
+        username: 'authelia_user'
     notifier:
       disable_startup_check: false
       filesystem:
@@ -270,7 +275,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         helm.sh/chart: authelia-0.11.22
       annotations:
-        authelia.com/checksum-config: 39eba1093dd346bea496f70add3d4f06e6b7989c758a2e9c6a38ece3cb39e816
+        authelia.com/checksum-config: 4866c4c7d63d5838c039d3161c4f7287784a5103bdd3f814d5dbe7d7a93d2ae9
         
     spec:
       hostNetwork: false
@@ -299,6 +304,8 @@ spec:
           value: '/secrets/internal/session.encryption.key'
         - name: AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE
           value: '/secrets/internal/storage.encryption.key'
+        - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE
+          value: '/secrets/postgres/password'
         - name: X_AUTHELIA_CONFIG
           value: '/configuration.yaml'
         - name: X_AUTHELIA_CONFIG_FILTERS
@@ -349,6 +356,10 @@ spec:
           name: user-db-volume
           readOnly: true
           subPath: users_database.yml
+        - mountPath: /secrets/postgres/password
+          name: postgres-secret-volume
+          readOnly: true
+          subPath: password
       volumes:
       - name: config
         configMap:
@@ -371,4 +382,10 @@ spec:
           items:
           - key: users_database.yml
             path: users_database.yml
+          secretName: authelia-secrets
+      - name: postgres-secret-volume
+        secret:
+          items:
+          - key: password
+            path: password
           secretName: authelia-user-password-db

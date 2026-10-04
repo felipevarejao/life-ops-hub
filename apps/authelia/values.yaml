@@ -11,10 +11,18 @@ configMap:
       - domain: k3s-control-plane-1.tail783ccb.ts.net
         default_redirection_url: https://auth.k3s-control-plane-1.tail783ccb.ts.net/auth
 
+  # --- BANCO DE DADOS POSTGRESQL ---
   storage:
     local:
+      enabled: false
+
+    postgres:
       enabled: true
-      path: /config/db.sqlite
+      address: 'tcp://postgres-cluster-rw.database.svc.cluster.local:5432'
+      database: 'authelia'
+      username: 'authelia_user'
+      password:
+        path: '/secrets/postgres/password'
 
   notifier:
     filesystem:
@@ -35,17 +43,29 @@ configMap:
 secret:
   existingSecret: "authelia-secrets"
 
-# Montagem de Secrets adicionais aceita pelo Schema do Authelia Chart
 pod:
   extraVolumes:
+    # A chave users_database.yml pertence ao authelia-secrets
     - name: user-db-volume
       secret:
-        secretName: authelia-user-password-db
+        secretName: authelia-secrets
         items:
           - key: users_database.yml
             path: users_database.yml
+    # A chave password pertence ao authelia-user-password-db
+    - name: postgres-secret-volume
+      secret:
+        secretName: authelia-user-password-db
+        items:
+          - key: password
+            path: password
+
   extraVolumeMounts:
     - name: user-db-volume
       mountPath: /secrets/users_database.yml
       subPath: users_database.yml
+      readOnly: true
+    - name: postgres-secret-volume
+      mountPath: /secrets/postgres/password
+      subPath: password
       readOnly: true
