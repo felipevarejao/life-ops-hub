@@ -12,3 +12,10 @@ spec:
     initdb:
       database: jobhunt_db
       owner: jobhunt_user
+  managed:
+    roles:
+      - name: authelia_user
+        ensure: present
+        login: true
+        passwordSecret:
+          name: authelia-user-password
