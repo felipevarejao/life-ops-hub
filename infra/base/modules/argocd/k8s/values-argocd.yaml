@@ -1,7 +1,7 @@
 configs:
   cm:
     url: http://k3s-control-plane-1.tail783ccb.ts.net
-    admin.enabled: false
+    admin.enabled: true
     dex.config: |
       connectors:
         - type: github
@@ -11,5 +11,8 @@ configs:
             clientID: ${github_client_id}
             clientSecret: ${github_client_secret}
   rbac:
+    scopes: '[groups, email]'
+    policy.default: role:readonly
     policy.csv: |
-      g, ${github_admin_user}, role:admin  
+      g, ${github_admin_user}, role:admin
+      g, "felipevarejao@users.noreply.github.com", role:admin
