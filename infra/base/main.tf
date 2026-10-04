@@ -24,6 +24,9 @@ module "postgres" {
   depends_on = [module.longhorn]
 }
 
+module "sealed_secrets" {
+  source     = "./modules/sealed-secrets"
+}
 
 # --- MAPEAMENTO DE ESTADO (MOVED) ---
 
