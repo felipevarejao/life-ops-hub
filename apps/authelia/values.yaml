@@ -1,0 +1,28 @@
+# apps/authelia/values.yaml
+
+configMap:
+  theme: dark
+
+  # Diz ao servidor do Authelia que ele responde sob a rota /auth
+  server:
+    path: "auth"
+  session:
+    cookies:
+      - domain: k3s-control-plane-1.tail783ccb.ts.net
+        default_redirection_url: https://auth.k3s-control-plane-1.tail783ccb.ts.net/auth
+
+  storage:
+    local:
+      path: /config/db.sqlite
+
+# Configuração do backend de autenticação
+  notifier:
+    filesystem:
+      filename: /config/notification.txt
+
+  authentication_backend:
+    file:
+      path: /config/users_database.yml
+
+secret:
+  existingSecret: "authelia-secrets"
