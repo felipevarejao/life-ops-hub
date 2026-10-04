@@ -15,14 +15,14 @@ configMap:
     local:
       path: /config/db.sqlite
 
-# Configuração do backend de autenticação
+  # Configuração do backend de autenticação
   notifier:
     filesystem:
       filename: /config/notification.txt
 
   authentication_backend:
     file:
-      path: /config/users_database.yml
+      path: /secrets/users_database.yml
 
 secret:
   existingSecret: "authelia-secrets"
