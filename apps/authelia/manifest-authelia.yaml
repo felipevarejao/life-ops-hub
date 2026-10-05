@@ -18,7 +18,7 @@ data:
     theme: 'dark'
     default_2fa_method: ''
     server:
-      address: 'tcp://0.0.0.0:9091/auth'
+      address: 'tcp://0.0.0.0:9091/'
       asset_path: ''
       headers:
         csp_template: ""
@@ -275,7 +275,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         helm.sh/chart: authelia-0.11.22
       annotations:
-        authelia.com/checksum-config: 5385bc8475f7b651d98069f28ede67778ccf405ac190e81ffb823982f7f1d388
+        authelia.com/checksum-config: 9660ffb19839edb417f724d37ed7925fd7d204152ca487b2ee10f23ca6877679
         
     spec:
       hostNetwork: false
