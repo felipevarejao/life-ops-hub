@@ -189,7 +189,6 @@ data:
       cookies:
         - domain: 'k3s-control-plane-1.tail783ccb.ts.net'
           authelia_url: 'https://k3s-control-plane-1.tail783ccb.ts.net/auth'
-          default_redirection_url: 'https://k3s-control-plane-1.tail783ccb.ts.net'
     regulation:
       modes:
       - 'user'
@@ -275,7 +274,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         helm.sh/chart: authelia-0.11.22
       annotations:
-        authelia.com/checksum-config: 593bfd030f3c116e0aad128fbbd038ad881594145425940e35789f1a9243a978
+        authelia.com/checksum-config: b99b8037b8121c71620008fcab219992a5f4490a9a837a3405cc5c2228cb3ca7
         
     spec:
       hostNetwork: false

@@ -10,7 +10,6 @@ configMap:
     cookies:
       - domain: k3s-control-plane-1.tail783ccb.ts.net
         path: auth
-        default_redirection_url: https://k3s-control-plane-1.tail783ccb.ts.net
 
   # --- BANCO DE DADOS POSTGRESQL ---
   storage:
