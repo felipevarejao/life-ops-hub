@@ -5,7 +5,6 @@ metadata:
   namespace: authelia
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: authelia-authelia-strip-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:

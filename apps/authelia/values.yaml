@@ -3,6 +3,9 @@
 configMap:
   theme: dark
 
+  server:
+    path: auth
+
   session:
     cookies:
       - domain: k3s-control-plane-1.tail783ccb.ts.net
