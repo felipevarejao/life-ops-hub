@@ -37,6 +37,6 @@ resource "helm_release" "argocd" {
 # Cria o recurso Ingress do ArgoCD com yaml file
 resource "kubectl_manifest" "argocd_ingress" {
   depends_on = [helm_release.argocd]
-  yaml_body = file("${path.module}/k8s/ingress-argocd.yaml")
+  yaml_body  = file("${path.module}/k8s/ingress-argocd.yaml")
 }
 
