@@ -15,12 +15,3 @@ resource "kubectl_manifest" "postgresql_cluster" {
   depends_on = [helm_release.cloudnative-pg]
   yaml_body = file("${path.module}/k8s/kind-cluster-postgres.yaml")
 }
-
-# Criar o banco de dados authelia no cluster PostgreSQL
-resource "kubectl_manifest" "postgresql_database_authelia" {
-  depends_on = [kubectl_manifest.postgresql_cluster]
-
-  yaml_body = file(
-    "${path.module}/k8s/database-authelia.yaml"
-  )
-}
