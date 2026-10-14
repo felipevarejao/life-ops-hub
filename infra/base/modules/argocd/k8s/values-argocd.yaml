@@ -1,6 +1,6 @@
 configs:
   cm:
-    url: http://k3s-control-plane-1.tail783ccb.ts.net
+    url: https://argocd.homelab.felipevarejao.dev.br
     admin.enabled: true
     dex.config: |
       connectors:
