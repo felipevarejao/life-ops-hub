@@ -1,4 +1,4 @@
-  # Required providers - 
+# Required providers - 
 terraform {
   required_providers {
     kubernetes = { # Definir o provedor Kubernetes, que permite gerenciar recursos no cluster Kubernetes.

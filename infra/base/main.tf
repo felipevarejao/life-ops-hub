@@ -25,7 +25,7 @@ module "postgres" {
 }
 
 module "sealed_secrets" {
-  source     = "./modules/sealed-secrets"
+  source = "./modules/sealed-secrets"
 }
 
 # --- MAPEAMENTO DE ESTADO (MOVED) ---
