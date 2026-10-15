@@ -281,7 +281,7 @@ spec:
               secretKeyRef:
                 name: authentik-secrets
                 key: AUTHENTIK_SECRET_KEY
-          -name: AUTHENTIK_POSTGRESQL__PASSWORD
+          - name: AUTHENTIK_POSTGRESQL__PASSWORD
             valueFrom:
               secretKeyRef:
                 name: authentik-secrets
@@ -394,7 +394,7 @@ spec:
               secretKeyRef:
                 name: authentik-secrets
                 key: AUTHENTIK_SECRET_KEY
-          -name: AUTHENTIK_POSTGRESQL__PASSWORD
+          - name: AUTHENTIK_POSTGRESQL__PASSWORD
             valueFrom:
               secretKeyRef:
                 name: authentik-secrets
