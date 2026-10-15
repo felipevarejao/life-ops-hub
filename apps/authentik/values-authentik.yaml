@@ -1,19 +1,18 @@
 authentik:
-  secret_key:
-    valueFrom:
-      secretKeyRef:
-        name: authentik-secrets
-        key: AUTHENTIK_SECRET_KEY
+  existingSecret:
+    secretName: authentik-secrets
+
+  error_reporting:
+    enabled: true
+
+  postgresql:
+    host: "postgres-cluster-rw.database.svc.cluster.local"
+    name: "authentik_db"
+    user: "authentik_user"
 
 postgresql:
   enabled: false
 
-global:
-  postgresql:
-    host: "postgres-cluster-rw.database.svc.cluster.local"
-    port: 5432
-    database: "authentik_db"
-    user: "authentik_user"
-    passwordSecret:
-      name: "authentik-secrets"
-      key: "postgresql-password"
+server:
+  ingress:
+    enabled: false
