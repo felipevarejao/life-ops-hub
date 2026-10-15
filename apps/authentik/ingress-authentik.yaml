@@ -7,6 +7,16 @@ metadata:
     kubernetes.io/ingress.class: "traefik" 
 spec:
   rules:
+  - host: auth.homelab.felipevarejao.dev.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: authentik-server
+            port:
+              number: 80
   - host: authentik.homelab.felipevarejao.dev.br
     http:
       paths:
