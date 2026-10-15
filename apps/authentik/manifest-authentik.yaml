@@ -276,6 +276,16 @@ spec:
           args:
             - server
           env:
+          - name: AUTHENTIK_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: AUTHENTIK_SECRET_KEY
+          -name: AUTHENTIK_POSTGRESQL__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: postgresql-password
           envFrom:
             - secretRef:
                 name: authentik
@@ -379,6 +389,16 @@ spec:
           args:
             - worker
           env:
+          - name: AUTHENTIK_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: AUTHENTIK_SECRET_KEY
+          -name: AUTHENTIK_POSTGRESQL__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: authentik-secrets
+                key: postgresql-password
           envFrom:
             - secretRef:
                 name: authentik
