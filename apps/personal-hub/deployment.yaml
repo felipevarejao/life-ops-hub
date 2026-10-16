@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: personal-hub
+  namespace: personal-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: personal-hub
+  template:
+    metadata:
+      labels:
+        app: personal-hub
+    spec:
+      containers:
+        - name: personal-hub
+          image: felipevarejao/personal-hub:v1
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: personal-hub
+  namespace: personal-hub
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: personal-hub-authentik@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: personalhub.felipevarejao.dev.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: personal-hub
+            port:
+              number: 80
