@@ -202,102 +202,109 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: authentik:apps/Deployment:authentik/authentik-server
   name: authentik-server
-  namespace: "authentik"
-  labels:
-    helm.sh/chart: "authentik-2026.8.3"
-    app.kubernetes.io/name: "authentik"
-    app.kubernetes.io/instance: "authentik"
-    app.kubernetes.io/component: "server"
-    app.kubernetes.io/managed-by: "Helm"
-    app.kubernetes.io/part-of: "authentik"
-    app.kubernetes.io/version: "2026.8.3"
+  namespace: authentik
 spec:
+  progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: "authentik"
-      app.kubernetes.io/instance: "authentik"
-      app.kubernetes.io/component: "server"
+      app.kubernetes.io/component: server
+      app.kubernetes.io/instance: authentik
+      app.kubernetes.io/name: authentik
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
-      labels:
-        helm.sh/chart: "authentik-2026.8.3"
-        app.kubernetes.io/name: "authentik"
-        app.kubernetes.io/instance: "authentik"
-        app.kubernetes.io/component: "server"
-        app.kubernetes.io/managed-by: "Helm"
-        app.kubernetes.io/part-of: "authentik"
-        app.kubernetes.io/version: "2026.8.3"
       annotations:
         checksum/secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+      labels:
+        app.kubernetes.io/component: server
+        app.kubernetes.io/instance: authentik
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: authentik
+        app.kubernetes.io/part-of: authentik
+        app.kubernetes.io/version: 2026.8.3
+        helm.sh/chart: authentik-2026.8.3
     spec:
-      terminationGracePeriodSeconds: 30
-      containers:
-        - name: server
-          image: ghcr.io/goauthentik/server:2026.8.3
-          imagePullPolicy: IfNotPresent
-          args:
-            - server
-          env:
-          envFrom:
-            - secretRef:
-                name: authentik-secrets
-          ports:
-            - name: http
-              containerPort: 9000
-              protocol: TCP
-            - name: https
-              containerPort: 9443
-              protocol: TCP
-            - name: metrics
-              containerPort: 9300
-              protocol: TCP
-          livenessProbe:
-            
-            failureThreshold: 3
-            httpGet:
-              path: '/-/health/live/'
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-          readinessProbe:
-            
-            failureThreshold: 3
-            httpGet:
-              path: '/-/health/ready/'
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-          startupProbe:
-            
-            failureThreshold: 60
-            httpGet:
-              path: '/-/health/live/'
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-          resources:
-            {}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: "authentik"
-                    app.kubernetes.io/instance: "authentik"
-                    app.kubernetes.io/component: "server"
-                topologyKey: kubernetes.io/hostname
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: server
+                  app.kubernetes.io/instance: authentik
+                  app.kubernetes.io/name: authentik
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - server
+        envFrom:
+        - secretRef:
+            name: authentik-secrets
+        image: ghcr.io/goauthentik/server:2026.8.3
+        imagePullPolicy: IfNotPresent
+        name: server
+        ports:
+        - containerPort: 9000
+          name: http
+          protocol: TCP
+        - containerPort: 9443
+          name: https
+          protocol: TCP
+        - containerPort: 9300
+          name: metrics
+          protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /-/health/live/
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 10     # Aumentado de 3 para 10 para evitar estouro de tempo limite
+          failureThreshold: 45    # Garante até 7.5 minutos de tolerância para o boot inicial
+        livenessProbe:
+          httpGet:
+            path: /-/health/live/
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 10     # Aumentado de 3 para 10
+          failureThreshold: 5     # Mais tolerância se o servidor engasgar temporariamente
+        readinessProbe:
+          httpGet:
+            path: /-/health/ready/
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 10     # Aumentado de 3 para 10
+          failureThreshold: 5
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
       enableServiceLinks: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
 
 ---
 # Source: authentik/templates/worker/deployment.yaml
