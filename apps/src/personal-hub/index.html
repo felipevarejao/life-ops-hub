@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070b16">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='3' width='8' height='8' rx='2.5' fill='%237aa2ff'/%3E%3Crect x='13' y='3' width='8' height='8' rx='2.5' fill='%23b08cff'/%3E%3Crect x='3' y='13' width='8' height='8' rx='2.5' fill='%234fd8e6'/%3E%3Crect x='13' y='13' width='8' height='8' rx='2.5' fill='%23e8ecf6' fill-opacity='.35'/%3E%3C/svg%3E">
+<title>Personal Hub</title>
+<style>
+  :root {
+    --ink: #070b16;
+    --ink-2: #0d1426;
+    --text: #e8ecf6;
+    --muted: #8b94ad;
+    --line: rgba(255,255,255,.09);
+    --glass: rgba(255,255,255,.045);
+    --radius: 20px;
+    --font: ui-sans-serif, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--ink); }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--ink);
+    padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fundo: três manchas de cor que derivam devagar */
+  .aurora { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(120% 80% at 50% 0%, var(--ink-2), var(--ink) 70%); }
+  .aurora i {
+    position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%;
+    filter: blur(80px); opacity: .5; will-change: transform;
+    animation: drift 48s ease-in-out infinite alternate;
+  }
+  .aurora i:nth-child(1) { background: #2b5cff; top: -22vmax; left: -14vmax; }
+  .aurora i:nth-child(2) { background: #7a3cff; bottom: -28vmax; right: -16vmax; animation-duration: 62s; animation-delay: -12s; opacity: .42; }
+  .aurora i:nth-child(3) { background: #00c2d1; top: 30vh; left: 38vw; width: 40vmax; height: 40vmax; animation-duration: 74s; animation-delay: -30s; opacity: .22; }
+  @keyframes drift {
+    from { transform: translate3d(0,0,0) scale(1); }
+    to   { transform: translate3d(8vmax, 6vmax, 0) scale(1.15); }
+  }
+
+  .wrap { width: min(1080px, 100%); margin: 0 auto; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 clamp(36px, 9vh, 88px); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .01em; }
+  .brand svg { width: 22px; height: 22px; }
+  .logout {
+    color: var(--muted); text-decoration: none; font-size: .9rem;
+    padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line);
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .logout:hover { color: var(--text); border-color: rgba(255,255,255,.22); background: var(--glass); }
+
+  .hero h1 {
+    font-weight: 300; font-size: clamp(2.3rem, 7vw, 4.4rem);
+    line-height: 1.05; letter-spacing: -.025em; text-wrap: balance;
+  }
+  .when { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; color: var(--muted); }
+  .when .time { font-size: clamp(1.5rem, 3.4vw, 2rem); color: var(--text); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .when .date { font-size: 1.05rem; }
+
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin: clamp(40px, 8vh, 72px) 0 16px; }
+  .section-head h2 { font-size: 1.05rem; font-weight: 600; }
+  .section-head span { color: var(--muted); font-size: .92rem; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: 1fr; list-style: none; padding: 0; }
+  .grid li { display: flex; }
+  @media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .card {
+    --h: 220; flex: 1;
+    position: relative; display: flex; flex-direction: column; gap: 14px;
+    min-height: 150px; padding: 20px; border-radius: var(--radius);
+    color: inherit; text-decoration: none;
+    background: linear-gradient(160deg, hsla(var(--h) 90% 70% / .10), var(--glass) 55%);
+    border: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    animation: rise .6s cubic-bezier(.2,.7,.2,1) both;
+    animation-delay: calc(var(--i) * 70ms + 150ms);
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  a.card:hover, a.card:focus-visible {
+    transform: translateY(-3px);
+    border-color: hsla(var(--h) 90% 70% / .55);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 14px 40px -12px hsla(var(--h) 90% 60% / .45);
+  }
+  a.card:active { transform: translateY(-1px); }
+  a:focus-visible { outline: 2px solid #9db7ff; outline-offset: 3px; }
+
+  .icon {
+    width: 46px; height: 46px; display: grid; place-items: center; font-size: 1.4rem;
+    border-radius: 14px; background: hsla(var(--h) 90% 65% / .16); border: 1px solid hsla(var(--h) 90% 70% / .25);
+  }
+  .card h3 { font-size: 1.12rem; font-weight: 600; }
+  .card p { color: var(--muted); font-size: .95rem; line-height: 1.45; }
+  .status { margin-top: auto; display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #3ddc97; box-shadow: 0 0 10px #3ddc97; }
+  .card.soon { opacity: .55; cursor: default; }
+  .card.soon .status::before { background: #6b7391; box-shadow: none; }
+  .card.soon .icon { filter: grayscale(.6); }
+
+  /* Brilho que acompanha o cursor nos cards ativos */
+  a.card::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), hsla(var(--h) 95% 70% / .18), transparent 70%);
+  }
+  a.card:hover::after { opacity: 1; }
+
+  .right { display: flex; align-items: center; gap: 10px; }
+  .who { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: .9rem; }
+  .who i { width: 8px; height: 8px; border-radius: 50%; background: #3ddc97; box-shadow: 0 0 10px #3ddc97; }
+
+  footer { margin-top: clamp(48px, 10vh, 96px); padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aurora i, .card { animation: none; }
+    .card, .logout { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="3" width="8" height="8" rx="2.5" fill="#7aa2ff"/>
+        <rect x="13" y="3" width="8" height="8" rx="2.5" fill="#b08cff" opacity=".85"/>
+        <rect x="3" y="13" width="8" height="8" rx="2.5" fill="#4fd8e6" opacity=".85"/>
+        <rect x="13" y="13" width="8" height="8" rx="2.5" fill="#e8ecf6" opacity=".25"/>
+      </svg>
+      Personal Hub
+    </div>
+    <div class="right"><span class="who"><i></i><span id="who"></span></span><a class="logout" id="logout" href="#">Sair</a></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1 id="greeting">Olá</h1>
+      <p class="when"><span class="time" id="time"></span><span class="date" id="date"></span></p>
+    </section>
+
+    <div class="section-head">
+      <h2>Módulos</h2>
+      <span id="count"></span>
+    </div>
+    <ul class="grid" id="grid"></ul>
+  </main>
+  <footer><span>Criado por Felipe Varejão</span><span id="ano"></span></footer>
+</div>
+
+<script>
+  // ---- Ajuste aqui ----
+  const USER_NAME = "Felipe";
+  const LOGOUT_URL = "https://auth.felipevarejao.dev.br/flows/-/default/invalidation/";
+
+  // Para adicionar um módulo, inclua um item neste array.
+  // status: "ativo" (clicável) ou "em breve" (esmaecido). hue: cor do módulo, de 0 a 360.
+  const MODULES = [
+    { nome: "Job Hunt",    desc: "Candidaturas, entrevistas e follow-ups.", icone: "🎯", url: "https://jobhunt.felipevarejao.dev.br", status: "ativo",    hue: 215 },
+    { nome: "Fitness",     desc: "Treinos e alimentação.",                  icone: "💪", url: "#", status: "em breve", hue: 150 },
+    { nome: "Assinaturas", desc: "Serviços recorrentes e renovações.",      icone: "🔁", url: "#", status: "em breve", hue: 38  }
+  ];
+  // ---------------------
+
+  document.getElementById("logout").href = LOGOUT_URL;
+  document.getElementById("ano").textContent = new Date().getFullYear();
+
+  let nome = USER_NAME;
+
+  function saudacao(d) {
+    const h = d.getHours();
+    return h >= 5 && h < 12 ? "Bom dia" : h >= 12 && h < 18 ? "Boa tarde" : "Boa noite";
+  }
+
+  const fmtHora = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const fmtData = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+
+  function atualizar() {
+    const agora = new Date();
+    document.getElementById("greeting").textContent = saudacao(agora) + ", " + nome + ".";
+    document.getElementById("who").textContent = nome;
+    document.getElementById("time").textContent = fmtHora.format(agora);
+    document.getElementById("date").textContent = fmtData.format(agora);
+  }
+  atualizar();
+  setInterval(atualizar, 30000);
+
+  // Nome vindo do login: o nginx devolve o header do authentik em /me. Se falhar, fica o USER_NAME.
+  fetch("/me", { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.text() : ""; })
+    .then(function (t) {
+      t = (t || "").trim();
+      if (t && t.length < 80 && t.indexOf("<") === -1) { nome = t.split(" ")[0]; atualizar(); }
+    })
+    .catch(function () {});
+
+  const grid = document.getElementById("grid");
+  MODULES.forEach(function (m, i) {
+    const ativo = m.status === "ativo";
+    const li = document.createElement("li");
+    const card = document.createElement(ativo ? "a" : "div");
+    card.className = "card" + (ativo ? "" : " soon");
+    card.style.setProperty("--h", m.hue);
+    card.style.setProperty("--i", i);
+    if (ativo) {
+      card.href = m.url;
+      card.addEventListener("pointermove", function (e) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        card.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    } else { card.setAttribute("aria-disabled", "true"); }
+
+    const ic = document.createElement("div"); ic.className = "icon"; ic.textContent = m.icone; ic.setAttribute("aria-hidden", "true");
+    const t = document.createElement("h3"); t.textContent = m.nome;
+    const p = document.createElement("p"); p.textContent = m.desc;
+    const st = document.createElement("span"); st.className = "status"; st.textContent = ativo ? "Disponível" : "Em breve";
+    card.append(ic, t, p, st);
+    li.appendChild(card);
+    grid.appendChild(li);
+  });
+
+  const n = MODULES.filter(function (m) { return m.status === "ativo"; }).length;
+  document.getElementById("count").textContent = n + (n === 1 ? " disponível" : " disponíveis");
+</script>
+</body>
+</html>

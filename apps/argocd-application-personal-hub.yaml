@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: personal-hub
+  namespace: personal-hub
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/felipevarejao/life-ops-hub'
+    targetRevision: HEAD
+    path: apps/personal-hub
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: personal-hub
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      
