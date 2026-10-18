@@ -28,7 +28,7 @@ spec:
               value: America/Sao_Paulo
             - name: HUB_URL
               value: https://personalhub.felipevarejao.dev.br
-            - name: uri
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: job-hunt-db
