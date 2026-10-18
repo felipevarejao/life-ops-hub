@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: job-hunt
+  namespace: job-hunt
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: job-hunt-authentik@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: jobhunt.felipevarejao.dev.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: job-hunt
+            port:
+              number: 80

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: job-hunt
+  namespace: job-hunt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: job-hunt
+  template:
+    metadata:
+      labels:
+        app: job-hunt
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: job-hunt
+          image: felipevarejao/job-hunt:v1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ENV
+              value: prod
+            - name: APP_TZ
+              value: America/Sao_Paulo
+            - name: HUB_URL
+              value: https://personalhub.felipevarejao.dev.br
+            - name: uri
+              valueFrom:
+                secretKeyRef:
+                  name: job-hunt-db
+                  key: uri
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 6
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              memory: 256Mi

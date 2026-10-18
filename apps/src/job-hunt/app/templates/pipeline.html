@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Pipeline | Job Hunt{% endblock %}
+{% block content %}
+<h1>Pipeline</h1>
+<form class="filters" method="get" action="{{ link('pipeline') }}">
+  <input type="search" name="q" value="{{ q or '' }}" placeholder="Buscar empresa ou vaga" aria-label="Buscar">
+  <select name="status" aria-label="Status">
+    <option value="">Todos os status</option>
+    {% for key, label in STATUSES %}<option value="{{ key }}"{% if status == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button class="btn ghost" type="submit">Filtrar</button>
+</form>
+
+{% for g in groups %}
+<details class="group"{% if g.key not in ['recusada', 'sem_resposta', 'aceita'] %} open{% endif %}>
+  <summary><span class="badge" data-s="{{ g.key }}">{{ g.label }}</span><span class="n">{{ g.rows|length }}</span></summary>
+  <ul class="list cols">
+    {% for a in g.rows %}
+    <li><a class="row" href="{{ link('detail', a.id) }}">
+      <div><strong>{{ a.company }}</strong><span class="t">{{ a.title }}</span></div>
+      {% if a.next %}<span class="tag {{ a.tone }}">{{ a.next }}</span>{% endif %}
+    </a></li>
+    {% endfor %}
+  </ul>
+</details>
+{% else %}
+<p class="empty mt">Nenhuma candidatura ainda. Use a aba Nova.</p>
+{% endfor %}
+{% endblock %}

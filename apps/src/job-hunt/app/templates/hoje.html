@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Hoje | Job Hunt{% endblock %}
+{% block content %}
+<h1>Hoje</h1>
+<p class="sub">O que precisa da sua atenção.</p>
+
+<h2>Follow-ups</h2>
+{% if followups %}
+<ul class="list">
+  {% for f in followups %}
+  <li><a class="row" href="{{ link('detail', f.id) }}">
+    <div><strong>{{ f.company }}</strong><span class="t">{{ f.title }}</span></div>
+    <span class="tag {{ f.tone }}">{{ f.label }}</span>
+  </a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Nenhum follow-up pendente.</p>
+{% endif %}
+
+<h2>Entrevistas nos próximos 7 dias</h2>
+{% if interviews %}
+<ul class="list">
+  {% for i in interviews %}
+  <li><a class="row" href="{{ link('detail', i.id) }}">
+    <div><strong>{{ i.company }}</strong><span class="t">{{ i.title }}, {{ i.kind }}{% if i.with_whom %} com {{ i.with_whom }}{% endif %}</span></div>
+    <span class="tag soon">{{ i.when }}</span>
+  </a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Nenhuma entrevista marcada.</p>
+{% endif %}
+
+<h2>Sem retorno</h2>
+{% if stale %}
+<ul class="list">
+  {% for s in stale %}
+  <li><a class="row" href="{{ link('detail', s.id) }}">
+    <div><strong>{{ s.company }}</strong><span class="t">{{ s.title }}</span></div>
+    <span class="tag">{{ s.label }}</span>
+  </a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Nenhuma candidatura parada há mais de 10 dias.</p>
+{% endif %}
+{% endblock %}

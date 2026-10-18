@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070b16">
+<title>{% block title %}Job Hunt{% endblock %}</title>
+<link rel="stylesheet" href="{{ static_url('style.css') }}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{{ link('hoje') }}">Job Hunt</a>
+  <nav class="tabs" aria-label="Principal">
+    <a href="{{ link('hoje') }}"{% if active == 'hoje' %} aria-current="page"{% endif %}>Hoje</a>
+    <a href="{{ link('pipeline') }}"{% if active == 'pipeline' %} aria-current="page"{% endif %}>Pipeline</a>
+    <a href="{{ link('new') }}"{% if active == 'new' %} aria-current="page"{% endif %}>Nova</a>
+  </nav>
+  <div class="who"><span>{{ user.name }}</span><a href="{{ link('hub') }}">Personal Hub</a></div>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+</body>
+</html>

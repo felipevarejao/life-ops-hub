@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{{ a.company if a else 'Nova candidatura' }} | Job Hunt{% endblock %}
+{% block content %}
+{% if notice %}<p class="notice">{{ notice }}</p>{% endif %}
+{% if a %}
+<div class="head">
+  <div><h1>{{ a.company }}</h1><p class="sub">{{ a.title }}</p></div>
+  <span class="badge" data-s="{{ a.status }}">{{ STATUS_LABELS[a.status] }}</span>
+</div>
+{% if a.reference %}{% set h = a.reference|ref_href %}{% if h %}<a class="ext" href="{{ h }}" rel="noopener noreferrer" target="_blank">{{ a.reference }}</a>{% else %}<p class="ext">{{ a.reference }}</p>{% endif %}{% endif %}
+{% else %}
+<h1>Nova candidatura</h1>
+<p class="sub">Empresa e vaga são obrigatórias. Se a empresa já existir, ela aparece como sugestão enquanto você digita.</p>
+{% endif %}
+
+<form class="panel" method="{{ form_method }}" action="{{ link('detail', a.id) if a else link('save') }}">
+  <div class="grid2">
+    <label><span>Empresa <b>*</b></span>
+      <input name="company" list="companies" value="{{ a.company if a else '' }}" required maxlength="200" autocomplete="off" placeholder="Comece a digitar...">
+    </label>
+    <label><span>Vaga <b>*</b></span><input name="title" value="{{ a.title if a else '' }}" required maxlength="200" autocomplete="off"></label>
+  </div>
+  <datalist id="companies">{% for c in companies %}<option value="{{ c.name }}">{% endfor %}</datalist>
+
+  <div class="grid2">
+    <label>Status
+      <select name="status">{% for key, label in STATUSES %}<option value="{{ key }}"{% if (a.status if a else 'aplicada') == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    </label>
+    <label>Aplicada em<input type="date" name="applied_at" value="{{ (a.applied_at if a else today) or '' }}"></label>
+  </div>
+  <label>Link ou referência<input name="reference" value="{{ (a.reference if a else '') or '' }}" maxlength="500" placeholder="Link da vaga, ou ex.: indicação do João por WhatsApp"></label>
+  <div class="grid2">
+    <label>Origem<input name="source" value="{{ (a.source if a else '') or '' }}" maxlength="120" placeholder="LinkedIn, Gupy, indicação..."></label>
+    <label>Modalidade
+      <select name="work_mode"><option value="">Não informado</option>{% for key, label in WORK_MODES %}<option value="{{ key }}"{% if a and a.work_mode == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    </label>
+  </div>
+  <div class="grid2">
+    <label>Local<input name="location" value="{{ (a.location if a else '') or '' }}" maxlength="120" placeholder="Cidade. Vazio se for remoto"></label>
+    <label>Próximo follow-up (vazio = 7 dias após aplicar)<input type="date" name="next_followup_at" value="{{ (a.next_followup_at if a else '') or '' }}"></label>
+  </div>
+  <label>Contato (recrutador ou indicação)<input name="contact" value="{{ (a.contact if a else '') or '' }}" placeholder="Nome, email ou LinkedIn do recrutador"></label>
+  <label>Notas<textarea name="notes" placeholder="Salário, observações...">{{ (a.notes if a else '') or '' }}</textarea></label>
+
+  <h2>Entrevistas desta vaga</h2>
+  {% for i in (interviews or []) %}
+  <fieldset class="iv">
+    <legend>Entrevista {{ loop.index }}</legend>
+    <input type="hidden" name="iv_id" value="{{ i.id }}">
+    <div class="grid2">
+      <label>Data e hora<input type="datetime-local" name="iv_when" value="{{ i.when_input }}"></label>
+      <label>Tipo
+        <select name="iv_kind">{% for key, label in INTERVIEW_KINDS %}<option value="{{ key }}"{% if i.kind == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+      </label>
+    </div>
+    <div class="grid2">
+      <label>Com quem<input name="iv_with" value="{{ i.with_whom or '' }}" maxlength="120"></label>
+      <label>Resultado<input name="iv_result" value="{{ i.result or '' }}" maxlength="200"></label>
+    </div>
+    <label>Anotações<textarea name="iv_notes">{{ i.notes or '' }}</textarea></label>
+    <label class="chk"><input type="checkbox" name="iv_remove" value="{{ i.id }}"> Remover esta entrevista</label>
+  </fieldset>
+  {% endfor %}
+  <details class="group more">
+  <summary>{{ 'Adicionar entrevista' if a else 'Já tem entrevista marcada? Preencha quando o recrutador marcar.' }}</summary>
+  <fieldset class="iv">
+    <legend>Nova entrevista</legend>
+    <input type="hidden" name="iv_id" value="">
+    <div class="grid2">
+      <label>Data e hora<input type="datetime-local" name="iv_when"></label>
+      <label>Tipo
+        <select name="iv_kind">{% for key, label in INTERVIEW_KINDS %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select>
+      </label>
+    </div>
+    <div class="grid2">
+      <label>Com quem<input name="iv_with" maxlength="120"></label>
+      <label>Resultado<input name="iv_result" maxlength="200"></label>
+    </div>
+    <label>Anotações<textarea name="iv_notes"></textarea></label>
+  </fieldset>
+  </details>
+
+  <button class="btn" type="submit">{{ 'Salvar alterações' if a else 'Salvar candidatura' }}</button>
+</form>
+
+{% if a %}
+{% if others %}
+<h2>Outras vagas em {{ a.company }}</h2>
+<ul class="list">
+  {% for o in others %}
+  <li><a class="row" href="{{ link('detail', o.id) }}"><div><strong>{{ o.title }}</strong></div><span class="badge" data-s="{{ o.status }}">{{ STATUS_LABELS[o.status] }}</span></a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+<details class="danger-zone">
+  <summary>Excluir candidatura</summary>
+  <form method="{{ form_method }}" action="{{ link('delete', a.id) }}">
+    <p class="sub">Apaga esta vaga e as entrevistas dela. A empresa continua cadastrada. Não dá para desfazer.</p>
+    <button class="btn danger" type="submit">Confirmar exclusão</button>
+  </form>
+</details>
+{% endif %}
+{% endblock %}
