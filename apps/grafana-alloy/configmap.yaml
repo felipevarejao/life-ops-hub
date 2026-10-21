@@ -25,5 +25,5 @@ data:
 
     otelcol.auth.basic "grafana" {
       username = "1846326"
-      password = sys.env("GRAFANA_CLOUD_TOKEN")
+      password = sys.env.GRAFANA_CLOUD_TOKEN
     }
